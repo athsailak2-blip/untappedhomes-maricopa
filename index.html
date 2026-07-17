@@ -7,37 +7,37 @@
 <style>
   :root{
     --bg:#0f1115; --card:#171a21; --line:#262b36; --txt:#e7ebf0; --mut:#9aa4b2;
-    --accent:#4f8cff; --green:#2ecc71; --amber:#f5a623; --head:#1c2029;
+    --accent:#4f8cff; --green:#2ecc71; --amber:#f5a623;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .wrap{max-width:1200px;margin:0 auto;padding:14px}
+  body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:14px}
   header{padding:14px 0 6px}
   h1{font-size:19px;margin:0 0 3px}
-  .sub{color:var(--mut);font-size:12px}
+  .sub{color:var(--mut);font-size:12.5px}
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:8px;margin:12px 0}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
-  .stat .n{font-size:19px;font-weight:700}
+  .stat .n{font-size:20px;font-weight:700}
   .stat .l{font-size:11px;color:var(--mut);margin-top:2px}
-  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;align-items:center}
-  select,input{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:13px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  input,select{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px}
   input{flex:1;min-width:150px}
-  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin-top:6px;-webkit-overflow-scrolling:touch}
-  table{border-collapse:collapse;width:100%;min-width:880px;font-size:13px}
-  thead th{position:sticky;top:0;background:var(--head);text-align:left;padding:9px 10px;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
-  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-  tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
-  .badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+  table{border-collapse:collapse;width:100%;min-width:760px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{position:sticky;top:0;background:#1c2029;cursor:pointer;user-select:none;font-size:12.5px;color:var(--mut);z-index:1}
+  th:hover{color:var(--txt)}
+  tbody tr:hover{background:#1a1e27}
+  td.wrap{white-space:normal;min-width:180px}
+  .badge{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:20px;font-weight:600}
   .bA{background:rgba(46,204,113,.16);color:var(--green)}
   .bB{background:rgba(245,166,35,.16);color:var(--amber)}
   .bENT{background:rgba(79,140,255,.16);color:var(--accent)}
-  .bIND{background:rgba(154,164,178,.16);color:var(--mut)}
-  .price{font-weight:600;white-space:nowrap}
-  .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin:10px 0;flex-wrap:wrap}
-  .pager button{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer}
-  .pager button:disabled{opacity:.4;cursor:default}
-  .loading{color:var(--mut);padding:24px;text-align:center}
-  footer{color:var(--mut);font-size:11px;padding:18px 0 40px;text-align:center}
+  .bIND{background:rgba(154,164,178,.14);color:var(--mut)}
+  .price{font-weight:600}
+  .meta{color:var(--mut);font-size:12px}
+  .loading{padding:30px;text-align:center;color:var(--mut)}
+  footer{color:var(--mut);font-size:11.5px;padding:18px 0 36px;text-align:center}
   a{color:var(--accent)}
 </style>
 </head>
@@ -54,117 +54,104 @@
     <select id="month" onchange="loadMonth()"></select>
     <select id="seg" onchange="render()">
       <option value="">All segments</option>
-      <option value="A">A — Primary</option>
+      <option value="A">A — Primary resident</option>
       <option value="B">B — Second home</option>
     </select>
-    <select id="city" onchange="render()"><option value="">All cities</option></select>
-    <input id="q" placeholder="Search name / address…" oninput="render()">
+    <select id="city" onchange="render()"></select>
+    <input id="q" placeholder="Search name / address / city / seller…" oninput="render()">
   </div>
 
-  <div class="tbl-wrap">
-    <table>
+  <div class="table-scroll">
+    <table id="tbl">
       <thead><tr>
-        <th onclick="sortBy('buyer')">Buyer</th>
-        <th onclick="sortBy('address')">Property Address</th>
-        <th onclick="sortBy('city')">City</th>
-        <th onclick="sortBy('price')">Price</th>
-        <th>Type</th>
-        <th>Seg</th>
-        <th>Buyer</th>
-        <th onclick="sortBy('move_in')">Move-in</th>
-        <th>Recorded</th>
+        <th data-k="buyer" onclick="sortBy('buyer')">Buyer</th>
+        <th data-k="address" onclick="sortBy('address')">Property Address</th>
+        <th data-k="city" onclick="sortBy('city')">City</th>
+        <th data-k="price" onclick="sortBy('price')">Price</th>
+        <th data-k="type" onclick="sortBy('type')">Type</th>
+        <th data-k="segment" onclick="sortBy('segment')">Seg</th>
+        <th data-k="buyer_type" onclick="sortBy('buyer_type')">Buyer</th>
+        <th data-k="move_in" onclick="sortBy('move_in')">Move-in</th>
+        <th data-k="deed" onclick="sortBy('deed')">Recorded</th>
+        <th data-k="seller" onclick="sortBy('seller')">Seller</th>
       </tr></thead>
-      <tbody id="rows"><tr><td colspan="9" class="loading">Loading…</td></tr></tbody>
+      <tbody id="rows"><tr><td colspan="10" class="loading">Loading…</td></tr></tbody>
     </table>
   </div>
 
-  <div class="pager">
-    <span id="pginfo" class="sub"></span>
-    <button id="prev" onclick="prevPage()">‹ Prev</button>
-    <button id="next" onclick="nextPage()">Next ›</button>
-  </div>
-
   <footer>
-    Source: Maricopa County Assessor — Sales Affidavits (public bulk download). A = owner-occupied primary residence, B = second home. Move-in target = recording date + 45 days. Last 24 months shown.
+    Source: Maricopa County Assessor — Sales Affidavits (public bulk download). A = owner-occupied primary residence, B = second home.
+    Move-in ≈ recording date + 45 days. Swipe the table sideways on mobile.
   </footer>
 </div>
 
 <script>
-let IDX=null, ROWS=[], PAGE=0, SORT={key:null,dir:1}, PER=100;
+let IDX=null, ROWS=[], SORT={k:"deed",dir:1};
 const $=s=>document.querySelector(s);
+const fmtPrice=p=>p?'$'+Number(p).toLocaleString():'';
 
 async function init(){
   try{ IDX=await (await fetch('site/leads_index.json?t='+Date.now())).json(); }
   catch(e){ $('#sub').textContent='Failed to load index'; return; }
-  $('#sub').textContent=`Generated ${IDX.generated} · ${IDX.total_leads.toLocaleString()} A+B leads (last 24 mo) · public data`;
+  $('#sub').textContent=`Generated ${IDX.generated} · ${IDX.total_leads.toLocaleString()} A+B leads · ${IDX.months.length} months`;
   $('#stats').innerHTML=`
-    <div class="stat"><div class="n">${IDX.total_leads.toLocaleString()}</div><div class="l">Total (24 mo)</div></div>
     <div class="stat"><div class="n">${IDX.months.length}</div><div class="l">Months</div></div>
-    <div class="stat"><div class="n" style="color:var(--green)">${IDX.months[0].segment_a.toLocaleString()}</div><div class="l">A this mo</div></div>
-    <div class="stat"><div class="n" style="color:var(--amber)">${IDX.months[0].segment_b.toLocaleString()}</div><div class="l">B this mo</div></div>`;
-  $('#month').innerHTML=IDX.months.map(m=>`<option value="${m.ym}">${m.label} (${m.count.toLocaleString()})</option>`).join('');
-  $('#month').onchange=loadMonth;
+    <div class="stat"><div class="n">${IDX.total_leads.toLocaleString()}</div><div class="l">Total A+B</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">${IDX.months[0].segment_a.toLocaleString()}</div><div class="l">Latest A</div></div>
+    <div class="stat"><div class="n" style="color:var(--amber)">${IDX.months[0].segment_b.toLocaleString()}</div><div class="l">Latest B</div></div>`;
+  $('#month').innerHTML='<option value="">All months</option>'+IDX.months.map(m=>`<option value="${m.ym}">${m.label} (${m.count.toLocaleString()})</option>`).join('');
   loadMonth();
 }
 
 async function loadMonth(){
   const ym=$('#month').value;
-  const m=IDX.months.find(x=>x.ym===ym);
-  $('#sub').textContent=`${m.label} · ${m.count.toLocaleString()} leads (A ${m.segment_a.toLocaleString()} / B ${m.segment_b.toLocaleString()})`;
-  ROWS=await (await fetch(`site/leads_${ym}.json?t=`+Date.now())).json();
+  if(!ym){ ROWS=[]; render(); $('#sub').textContent+=' — pick a month'; return; }
+  $('#rows').innerHTML='<tr><td colspan="10" class="loading">Loading '+ym+'…</td></tr>';
+  try{ ROWS=await (await fetch('site/leads_'+ym+'.json?t='+Date.now())).json(); }
+  catch(e){ $('#rows').innerHTML='<tr><td colspan="10" class="loading">Load failed</td></tr>'; return; }
   // city dropdown
-  const cities=[...new Set(ROWS.map(r=>r.city))].sort();
-  $('#city').innerHTML='<option value="">All cities</option>'+cities.map(c=>`<option>${c}</option>`).join('');
-  PAGE=0; SORT={key:null,dir:1}; render();
+  const cs={}; ROWS.forEach(r=>cs[r.city]=(cs[r.city]||0)+1);
+  $('#city').innerHTML='<option value="">All cities</option>'+Object.keys(cs).sort().map(c=>`<option>${c}</option>`).join('');
+  sortBy(SORT.k,true);
 }
 
-function filtered(){
-  const q=$('#q').value.trim().toLowerCase(), seg=$('#seg').value, city=$('#city').value;
-  let r=ROWS.filter(x=>{
-    if(seg&&x.segment!==seg)return false;
-    if(city&&x.city!==city)return false;
-    if(q&&!(x.buyer+' '+x.address+' '+x.city).toLowerCase().includes(q))return false;
-    return true;
+function sortBy(k,silent){
+  if(!silent && SORT.k===k) SORT.dir*=-1; else if(!silent){SORT.k=k;SORT.dir=1;}
+  ROWS.sort((a,b)=>{
+    let x=a[k]||'', y=b[k]||'';
+    if(k==='price'){x=Number(x)||0;y=Number(y)||0;return (x-y)*SORT.dir;}
+    return String(x).localeCompare(String(y))*SORT.dir;
   });
-  if(SORT.key){
-    r=r.slice().sort((a,b)=>{
-      let av=a[SORT.key]||'', bv=b[SORT.key]||'';
-      if(SORT.key==='price'){av=+av||0;bv=+bv||0;}
-      return (av>bv?1:av<bv?-1:0)*SORT.dir;
-    });
-  }
-  return r;
+  render();
 }
-function sortBy(k){ SORT.dir = (SORT.key===k?-SORT.dir:1); SORT.key=k; render(); }
 
 function render(){
-  const all=filtered();
-  const pages=Math.ceil(all.length/PER)||1;
-  if(PAGE>=pages)PAGE=pages-1; if(PAGE<0)PAGE=0;
-  const slice=all.slice(PAGE*PER,PAGE*PER+PER);
-  $('#rows').innerHTML=slice.map(r=>{
+  if(!ROWS.length){ $('#rows').innerHTML='<tr><td colspan="10" class="loading">No month selected or no leads</td></tr>'; return; }
+  const q=$('#q').value.trim().toLowerCase(), seg=$('#seg').value, city=$('#city').value;
+  const rows=ROWS.filter(r=>{
+    if(seg && r.segment!==seg) return false;
+    if(city && r.city!==city) return false;
+    if(q && !(r.buyer+' '+r.address+' '+r.city+' '+r.seller+' '+r.state).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('#rows').innerHTML = rows.length ? rows.map(r=>{
     const occ=r.segment==='A'?'<span class="badge bA">A</span>':'<span class="badge bB">B</span>';
-    const bt=r.buyer_type==='ENTITY'?'<span class="badge bENT">Ent</span>':'<span class="badge bIND">Ind</span>';
-    const price=r.price?'$'+Number(r.price).toLocaleString():'';
+    const bt=r.buyer_type==='ENTITY'?'<span class="badge bENT">Entity</span>':'<span class="badge bIND">Ind</span>';
     return `<tr>
-      <td>${esc(r.buyer)}</td>
-      <td>${esc(r.address)}</td>
-      <td>${esc(r.city)} ${esc(r.zip)}</td>
-      <td class="price">${price}</td>
-      <td>${esc(r.type)}</td>
+      <td class="wrap"><b>${esc(r.buyer)}</b><div class="meta">${esc(r.state)}</div></td>
+      <td class="wrap">${esc(r.address)}<div class="meta">${esc(r.city)} ${esc(r.zip)}</div></td>
+      <td>${esc(r.city)}</td>
+      <td class="price">${fmtPrice(r.price)}</td>
+      <td class="meta">${esc(r.type)}</td>
       <td>${occ}</td>
       <td>${bt}</td>
-      <td>${esc(r.move_in)}</td>
-      <td>${esc(r.deed)}</td>
+      <td class="meta">${esc(r.move_in)||'—'}</td>
+      <td class="meta">${esc(r.deed)}</td>
+      <td class="wrap meta">${esc(r.seller)}</td>
     </tr>`;
-  }).join('') || '<tr><td colspan="9" class="loading">No leads match.</td></tr>';
-  $('#pginfo').textContent=`${all.length.toLocaleString()} leads · page ${PAGE+1}/${pages}`;
-  $('#prev').disabled=PAGE<=0; $('#next').disabled=PAGE>=pages-1;
+  }).join('') : '<tr><td colspan="10" class="loading">No leads match</td></tr>';
 }
-function prevPage(){PAGE--;render();}
-function nextPage(){PAGE++;render();}
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-
 init();
 </script>
 </body>

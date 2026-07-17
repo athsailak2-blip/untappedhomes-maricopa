@@ -1,0 +1,175 @@
+{
+ "generated": "2026-07-17 19:30",
+ "source": "Maricopa County Assessor \u2014 Sales Affidavits (public bulk download)",
+ "total_leads": 108515,
+ "months": [
+  {
+   "ym": "202606",
+   "label": "06-2026",
+   "count": 1229,
+   "segment_a": 1016,
+   "segment_b": 213
+  },
+  {
+   "ym": "202605",
+   "label": "05-2026",
+   "count": 4074,
+   "segment_a": 3418,
+   "segment_b": 656
+  },
+  {
+   "ym": "202604",
+   "label": "04-2026",
+   "count": 5723,
+   "segment_a": 4893,
+   "segment_b": 830
+  },
+  {
+   "ym": "202603",
+   "label": "03-2026",
+   "count": 6191,
+   "segment_a": 5337,
+   "segment_b": 854
+  },
+  {
+   "ym": "202602",
+   "label": "02-2026",
+   "count": 5121,
+   "segment_a": 4384,
+   "segment_b": 737
+  },
+  {
+   "ym": "202601",
+   "label": "01-2026",
+   "count": 4496,
+   "segment_a": 3945,
+   "segment_b": 551
+  },
+  {
+   "ym": "202512",
+   "label": "12-2025",
+   "count": 4206,
+   "segment_a": 3664,
+   "segment_b": 542
+  },
+  {
+   "ym": "202511",
+   "label": "11-2025",
+   "count": 4065,
+   "segment_a": 3580,
+   "segment_b": 485
+  },
+  {
+   "ym": "202510",
+   "label": "10-2025",
+   "count": 4751,
+   "segment_a": 4174,
+   "segment_b": 577
+  },
+  {
+   "ym": "202509",
+   "label": "09-2025",
+   "count": 4772,
+   "segment_a": 4265,
+   "segment_b": 507
+  },
+  {
+   "ym": "202508",
+   "label": "08-2025",
+   "count": 4666,
+   "segment_a": 4061,
+   "segment_b": 605
+  },
+  {
+   "ym": "202507",
+   "label": "07-2025",
+   "count": 4564,
+   "segment_a": 4092,
+   "segment_b": 472
+  },
+  {
+   "ym": "202506",
+   "label": "06-2025",
+   "count": 4912,
+   "segment_a": 4406,
+   "segment_b": 506
+  },
+  {
+   "ym": "202505",
+   "label": "05-2025",
+   "count": 5140,
+   "segment_a": 4598,
+   "segment_b": 542
+  },
+  {
+   "ym": "202504",
+   "label": "04-2025",
+   "count": 5517,
+   "segment_a": 4996,
+   "segment_b": 521
+  },
+  {
+   "ym": "202503",
+   "label": "03-2025",
+   "count": 5544,
+   "segment_a": 4965,
+   "segment_b": 579
+  },
+  {
+   "ym": "202502",
+   "label": "02-2025",
+   "count": 4793,
+   "segment_a": 4270,
+   "segment_b": 523
+  },
+  {
+   "ym": "202501",
+   "label": "01-2025",
+   "count": 4397,
+   "segment_a": 3941,
+   "segment_b": 456
+  },
+  {
+   "ym": "202412",
+   "label": "12-2024",
+   "count": 3676,
+   "segment_a": 3278,
+   "segment_b": 398
+  },
+  {
+   "ym": "202411",
+   "label": "11-2024",
+   "count": 3780,
+   "segment_a": 3353,
+   "segment_b": 427
+  },
+  {
+   "ym": "202410",
+   "label": "10-2024",
+   "count": 4286,
+   "segment_a": 3834,
+   "segment_b": 452
+  },
+  {
+   "ym": "202409",
+   "label": "09-2024",
+   "count": 4100,
+   "segment_a": 3690,
+   "segment_b": 410
+  },
+  {
+   "ym": "202408",
+   "label": "08-2024",
+   "count": 4133,
+   "segment_a": 3726,
+   "segment_b": 407
+  },
+  {
+   "ym": "202407",
+   "label": "07-2024",
+   "count": 4379,
+   "segment_a": 4022,
+   "segment_b": 357
+  }
+ ]
+}

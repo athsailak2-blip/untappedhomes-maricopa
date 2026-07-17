@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UntappedHomes — Maricopa New Homeowners</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --line:#262b36; --txt:#e7ebf0; --mut:#9aa4b2;
+    --accent:#4f8cff; --green:#2ecc71; --amber:#f5a623; --red:#ff5d5d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:16px}
+  header{padding:18px 0 8px}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--mut);font-size:13px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .stat .n{font-size:22px;font-weight:700}
+  .stat .l{font-size:12px;color:var(--mut);margin-top:2px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+  input,select{background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+  input{flex:1;min-width:160px}
+  .badge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600}
+  .bA{background:rgba(46,204,113,.16);color:var(--green)}
+  .bB{background:rgba(245,166,35,.16);color:var(--amber)}
+  .bENT{background:rgba(79,140,255,.16);color:var(--accent)}
+  .bIND{background:rgba(154,164,178,.16);color:var(--mut)}
+  .lead{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+  .lead .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .lead .name{font-weight:600;font-size:15px;word-break:break-word}
+  .lead .addr{color:var(--mut);font-size:13px;margin:2px 0 6px}
+  .lead .meta{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--mut)}
+  .lead .price{color:var(--txt);font-weight:600}
+  .loading{color:var(--mut);padding:30px;text-align:center}
+  footer{color:var(--mut);font-size:12px;padding:20px 0 40px;text-align:center}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🏡 UntappedHomes — Maricopa New Homeowners</h1>
+    <div class="sub" id="sub">Loading…</div>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <input id="q" placeholder="Search name, address, city…" oninput="render()">
+    <select id="seg" onchange="render()">
+      <option value="">All segments</option>
+      <option value="A">A — Primary resident</option>
+      <option value="B">B — Second home</option>
+    </select>
+    <select id="city" onchange="render()"></select>
+  </div>
+
+  <div id="list"><div class="loading">Loading leads…</div></div>
+
+  <footer>
+    Source: Maricopa County Assessor — Sales Affidavits (public bulk download). A = owner-occupied primary residence, B = second home. Move-in target = recording date + 45 days.
+  </footer>
+</div>
+
+<script>
+let DATA = null;
+const $ = s => document.querySelector(s);
+
+async function load(){
+  try{
+    const r = await fetch('site/leads.json?t='+Date.now());
+    DATA = await r.json();
+  }catch(e){
+    $('#sub').textContent = 'Failed to load leads.json';
+    $('#list').innerHTML = '<div class="loading">Could not load data.</div>';
+    return;
+  }
+  $('#sub').textContent = `Generated ${DATA.generated} · ${DATA.count} new homeowners (A+B) · public data`;
+  // stats
+  $('#stats').innerHTML = `
+    <div class="stat"><div class="n">${DATA.count}</div><div class="l">Total leads</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">${DATA.segment_a}</div><div class="l">A · Primary</div></div>
+    <div class="stat"><div class="n" style="color:var(--amber)">${DATA.segment_b}</div><div class="l">B · Second home</div></div>
+    <div class="stat"><div class="n">${DATA.top_cities[0].city}</div><div class="l">Top city (${DATA.top_cities[0].n})</div></div>`;
+  // city dropdown
+  const cities = DATA.top_cities.map(c=>c.city);
+  $('#city').innerHTML = '<option value="">All cities</option>' + cities.map(c=>`<option>${c}</option>`).join('');
+  render();
+}
+
+function render(){
+  if(!DATA) return;
+  const q = $('#q').value.trim().toLowerCase();
+  const seg = $('#seg').value;
+  const city = $('#city').value;
+  let rows = DATA.leads.filter(r=>{
+    if(seg && r.segment!==seg) return false;
+    if(city && r.city!==city) return false;
+    if(q && !(r.buyer+' '+r.address+' '+r.city+' '+r.state).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $('#list').innerHTML = rows.length ? rows.map(card).join('') :
+    '<div class="loading">No leads match.</div>';
+}
+
+function card(r){
+  const occ = r.segment==='A' ? '<span class="badge bA">A · Primary</span>' : '<span class="badge bB">B · Second</span>';
+  const bt = r.buyer_type==='ENTITY' ? '<span class="badge bENT">Entity</span>' : '<span class="badge bIND">Individual</span>';
+  const price = r.price ? '$'+Number(r.price).toLocaleString() : '';
+  return `<div class="lead">
+    <div class="top"><div class="name">${esc(r.buyer)}</div><div class="price">${price}</div></div>
+    <div class="addr">${esc(r.address)}, ${esc(r.city)} ${esc(r.zip)}</div>
+    <div class="meta">
+      ${occ} ${bt}
+      <span>Move-in ~${esc(r.move_in)}</span>
+      <span>${esc(r.type)}</span>
+      <span>Recorded ${esc(r.deed)}</span>
+      <span>Buyer state: ${esc(r.state)}</span>
+    </div>
+  </div>`;
+}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+load();
+</script>
+</body>
+</html>
